@@ -15,28 +15,34 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 15px;
+            padding: 10px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
         .header {
             background: white;
-            padding: 30px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
         }
 
         h1 {
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #666;
         }
 
         .progress-bar {
@@ -44,7 +50,7 @@
             height: 25px;
             border-radius: 12px;
             overflow: hidden;
-            margin-top: 15px;
+            margin-top: 12px;
         }
 
         .progress-fill {
@@ -56,70 +62,91 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .card {
             background: white;
-            padding: 40px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        .mode-selector {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .mode-btn {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid #667eea;
-            background: white;
-            border-radius: 10px;
-            cursor: pointer;
+        .page-info {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
             font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
+            text-align: center;
         }
 
-        .mode-btn.active {
-            background: #667eea;
-            color: white;
+        .questions-container {
+            margin-bottom: 20px;
         }
 
-        .mode-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .question-item {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 0;
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .question-content {
+            flex: 1;
         }
 
         .question-number {
             color: #667eea;
             font-weight: bold;
-            margin-bottom: 15px;
-            font-size: 18px;
+            font-size: 14px;
+            margin-bottom: 5px;
         }
 
         .question-text {
-            font-size: 24px;
+            font-size: 16px;
             color: #333;
-            margin-bottom: 25px;
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
-        .answer-section {
-            margin-top: 20px;
+        .toggle-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toggle-btn:hover {
+            background: #5568d3;
         }
 
         .answer-text {
             background: #f0f4ff;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 8px;
             border-left: 4px solid #667eea;
-            margin-top: 20px;
+            margin-top: 10px;
             display: none;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .answer-text.show {
@@ -128,81 +155,157 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .answer-text ul {
-            margin-left: 20px;
-            margin-top: 10px;
-        }
-
-        .answer-text li {
-            margin: 5px 0;
-        }
-
-        .controls {
+        .pagination {
             display: flex;
-            gap: 15px;
-            margin-top: 25px;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
-        .btn {
-            flex: 1;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
+        .page-btn {
+            padding: 10px 15px;
+            border: 2px solid #667eea;
+            background: white;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            min-width: 45px;
         }
 
-        .btn-primary {
+        .page-btn.active {
             background: #667eea;
             color: white;
         }
 
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
+        .page-btn:hover:not(.active) {
+            background: #f0f4ff;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        .page-btn.nav-btn {
+            min-width: auto;
         }
 
         .stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 15px;
         }
 
         .stat-box {
             background: #f0f4ff;
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
             text-align: center;
         }
 
         .stat-value {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: bold;
             color: #667eea;
         }
 
         .stat-label {
-            font-size: 14px;
+            font-size: 12px;
             color: #666;
-            margin-top: 5px;
+            margin-top: 4px;
+        }
+
+        .show-all-btn {
+            width: 100%;
+            padding: 12px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+
+        .show-all-btn:hover {
+            background: #d0d0d0;
+        }
+
+        /* Mobile optimizations for iPhone */
+        @media (max-width: 600px) {
+            body {
+                padding: 8px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .header p {
+                font-size: 13px;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .question-text {
+                font-size: 15px;
+            }
+
+            .answer-text {
+                font-size: 13px;
+                padding: 12px;
+            }
+
+            .page-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+                min-width: 40px;
+            }
+
+            .toggle-btn {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .stat-value {
+                font-size: 18px;
+            }
+
+            .stat-label {
+                font-size: 11px;
+            }
+
+            .question-item {
+                padding: 12px 0;
+            }
+
+            .question-header {
+                gap: 8px;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 400px) {
+            .pagination {
+                gap: 5px;
+            }
+
+            .page-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+                min-width: 35px;
+            }
         }
     </style>
 </head>
@@ -217,28 +320,22 @@
         </div>
 
         <div class="card">
-            <div class="mode-selector">
-                <button class="mode-btn active" onclick="setMode('sequential')">Sequential</button>
-                <button class="mode-btn" onclick="setMode('random')">Random</button>
+            <div class="page-info" id="pageInfo">Page 1 of 10 (Questions 1-10)</div>
+
+            <button class="show-all-btn" onclick="toggleAllAnswers()" id="showAllBtn">Show All Answers</button>
+
+            <div class="questions-container" id="questionsContainer">
+                <!-- Questions will be dynamically inserted here -->
             </div>
 
-            <div class="question-number" id="questionNumber">Question 1 of 100</div>
-            <div class="question-text" id="questionText"></div>
-
-            <div class="answer-section">
-                <div class="answer-text" id="answerText"></div>
-            </div>
-
-            <div class="controls">
-                <button class="btn btn-secondary" onclick="prevQuestion()" id="prevBtn">← Previous</button>
-                <button class="btn btn-primary" onclick="toggleAnswer()" id="showBtn">Show Answer</button>
-                <button class="btn btn-secondary" onclick="nextQuestion()">Next →</button>
+            <div class="pagination" id="pagination">
+                <!-- Pagination buttons will be dynamically inserted here -->
             </div>
 
             <div class="stats">
                 <div class="stat-box">
-                    <div class="stat-value" id="currentQ">1</div>
-                    <div class="stat-label">Current</div>
+                    <div class="stat-value" id="currentPage">1</div>
+                    <div class="stat-label">Current Page</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-value" id="viewedQ">0</div>
@@ -356,72 +453,141 @@
             { q: "Name two national U.S. holidays.", a: "• New Year's Day<br>• Martin Luther King, Jr. Day<br>• Presidents' Day<br>• Memorial Day<br>• Independence Day<br>• Labor Day<br>• Columbus Day<br>• Veterans Day<br>• Thanksgiving<br>• Christmas" }
         ];
 
-        let currentIndex = 0;
-        let mode = 'sequential';
+        const QUESTIONS_PER_PAGE = 10;
+        const TOTAL_PAGES = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
+        let currentPage = 1;
         let viewedQuestions = new Set();
-        let showingAnswer = false;
+        let allAnswersVisible = false;
 
-        function setMode(newMode) {
-            mode = newMode;
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            if (mode === 'random') {
-                currentIndex = Math.floor(Math.random() * questions.length);
-                displayQuestion();
+        function displayPage(pageNumber) {
+            currentPage = pageNumber;
+            const startIdx = (pageNumber - 1) * QUESTIONS_PER_PAGE;
+            const endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, questions.length);
+
+            // Update page info
+            document.getElementById('pageInfo').textContent =
+                `Page ${pageNumber} of ${TOTAL_PAGES} (Questions ${startIdx + 1}-${endIdx})`;
+            document.getElementById('currentPage').textContent = pageNumber;
+
+            // Clear container
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            // Add questions for this page
+            for (let i = startIdx; i < endIdx; i++) {
+                const q = questions[i];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-item';
+                questionDiv.innerHTML = `
+                    <div class="question-header" onclick="toggleAnswer(${i})">
+                        <div class="question-content">
+                            <div class="question-number">Question ${i + 1}</div>
+                            <div class="question-text">${q.q}</div>
+                        </div>
+                        <button class="toggle-btn" onclick="event.stopPropagation(); toggleAnswer(${i})" id="btn-${i}">Show</button>
+                    </div>
+                    <div class="answer-text" id="answer-${i}">${q.a}</div>
+                `;
+                container.appendChild(questionDiv);
+
+                // Mark as viewed
+                viewedQuestions.add(i);
+            }
+
+            // Update viewed count
+            updateProgress();
+
+            // Update pagination
+            renderPagination();
+
+            // Reset show all button
+            allAnswersVisible = false;
+            document.getElementById('showAllBtn').textContent = 'Show All Answers';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleAnswer(index) {
+            const answerEl = document.getElementById(`answer-${index}`);
+            const btnEl = document.getElementById(`btn-${index}`);
+
+            if (answerEl.classList.contains('show')) {
+                answerEl.classList.remove('show');
+                btnEl.textContent = 'Show';
+            } else {
+                answerEl.classList.add('show');
+                btnEl.textContent = 'Hide';
             }
         }
 
-        function displayQuestion() {
-            const q = questions[currentIndex];
-            document.getElementById('questionNumber').textContent = `Question ${currentIndex + 1} of 100`;
-            document.getElementById('questionText').textContent = q.q;
-            document.getElementById('answerText').innerHTML = q.a;
-            document.getElementById('answerText').classList.remove('show');
-            document.getElementById('showBtn').textContent = 'Show Answer';
-            document.getElementById('currentQ').textContent = currentIndex + 1;
-            
-            showingAnswer = false;
-            viewedQuestions.add(currentIndex);
+        function toggleAllAnswers() {
+            allAnswersVisible = !allAnswersVisible;
+            const startIdx = (currentPage - 1) * QUESTIONS_PER_PAGE;
+            const endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, questions.length);
+
+            for (let i = startIdx; i < endIdx; i++) {
+                const answerEl = document.getElementById(`answer-${i}`);
+                const btnEl = document.getElementById(`btn-${i}`);
+
+                if (allAnswersVisible) {
+                    answerEl.classList.add('show');
+                    btnEl.textContent = 'Hide';
+                } else {
+                    answerEl.classList.remove('show');
+                    btnEl.textContent = 'Show';
+                }
+            }
+
+            document.getElementById('showAllBtn').textContent =
+                allAnswersVisible ? 'Hide All Answers' : 'Show All Answers';
+        }
+
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn nav-btn';
+            prevBtn.textContent = '←';
+            prevBtn.onclick = () => {
+                if (currentPage > 1) displayPage(currentPage - 1);
+            };
+            prevBtn.disabled = currentPage === 1;
+            if (currentPage === 1) prevBtn.style.opacity = '0.3';
+            pagination.appendChild(prevBtn);
+
+            // Page number buttons
+            for (let i = 1; i <= TOTAL_PAGES; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => displayPage(i);
+                pagination.appendChild(pageBtn);
+            }
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn nav-btn';
+            nextBtn.textContent = '→';
+            nextBtn.onclick = () => {
+                if (currentPage < TOTAL_PAGES) displayPage(currentPage + 1);
+            };
+            nextBtn.disabled = currentPage === TOTAL_PAGES;
+            if (currentPage === TOTAL_PAGES) nextBtn.style.opacity = '0.3';
+            pagination.appendChild(nextBtn);
+        }
+
+        function updateProgress() {
             document.getElementById('viewedQ').textContent = viewedQuestions.size;
-            
             const progress = Math.round((viewedQuestions.size / questions.length) * 100);
             document.getElementById('progressBar').style.width = progress + '%';
             document.getElementById('progressBar').textContent = `${viewedQuestions.size}/100`;
-            
-            document.getElementById('prevBtn').disabled = currentIndex === 0 && mode === 'sequential';
         }
 
-        function toggleAnswer() {
-            const answerEl = document.getElementById('answerText');
-            showingAnswer = !showingAnswer;
-            
-            if (showingAnswer) {
-                answerEl.classList.add('show');
-                document.getElementById('showBtn').textContent = 'Hide Answer';
-            } else {
-                answerEl.classList.remove('show');
-                document.getElementById('showBtn').textContent = 'Show Answer';
-            }
-        }
-
-        function nextQuestion() {
-            if (mode === 'sequential') {
-                currentIndex = (currentIndex + 1) % questions.length;
-            } else {
-                currentIndex = Math.floor(Math.random() * questions.length);
-            }
-            displayQuestion();
-        }
-
-        function prevQuestion() {
-            if (mode === 'sequential' && currentIndex > 0) {
-                currentIndex--;
-                displayQuestion();
-            }
-        }
-
-        displayQuestion();
+        // Initialize
+        displayPage(1);
     </script>
 </body>
 </html>
