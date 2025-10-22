@@ -99,12 +99,37 @@
             justify-content: space-between;
             align-items: flex-start;
             gap: 10px;
-            cursor: pointer;
             user-select: none;
         }
 
         .question-content {
             flex: 1;
+            cursor: pointer;
+        }
+
+        .question-controls {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            flex-shrink: 0;
+        }
+
+        .bookmark-btn {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .bookmark-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .bookmark-btn.marked {
+            filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
         }
 
         .question-number {
@@ -236,6 +261,51 @@
             background: #d0d0d0;
         }
 
+        .view-toggle-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+
+        .view-toggle-btn:hover {
+            background: #5568d3;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #667eea;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: #f0f4ff;
+        }
+
         /* Mobile optimizations for iPhone */
         @media (max-width: 600px) {
             body {
@@ -322,6 +392,13 @@
         <div class="card">
             <div class="page-info" id="pageInfo">Page 1 of 10 (Questions 1-10)</div>
 
+            <button class="view-toggle-btn" onclick="toggleViewMode()" id="viewToggleBtn">Show All 100 Questions</button>
+
+            <div class="filter-container">
+                <button class="filter-btn active" onclick="setFilter('all')" id="filterAll">All Questions</button>
+                <button class="filter-btn" onclick="setFilter('marked')" id="filterMarked">Marked Only</button>
+            </div>
+
             <button class="show-all-btn" onclick="toggleAllAnswers()" id="showAllBtn">Show All Answers</button>
 
             <div class="questions-container" id="questionsContainer">
@@ -338,12 +415,12 @@
                     <div class="stat-label">Current Page</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" id="viewedQ">0</div>
-                    <div class="stat-label">Viewed</div>
+                    <div class="stat-value" id="markedQ">0</div>
+                    <div class="stat-label">Marked</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value">100</div>
-                    <div class="stat-label">Total</div>
+                    <div class="stat-value" id="viewedQ">0</div>
+                    <div class="stat-label">Viewed</div>
                 </div>
             </div>
         </div>
@@ -457,34 +534,171 @@
         const TOTAL_PAGES = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
         let currentPage = 1;
         let viewedQuestions = new Set();
+        let markedQuestions = new Set(JSON.parse(localStorage.getItem('n400-marked') || '[]'));
         let allAnswersVisible = false;
+        let showAllQuestionsMode = false;
+        let currentFilter = 'all'; // 'all' or 'marked'
+
+        function toggleBookmark(index) {
+            if (markedQuestions.has(index)) {
+                markedQuestions.delete(index);
+            } else {
+                markedQuestions.add(index);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('n400-marked', JSON.stringify([...markedQuestions]));
+
+            // Update bookmark button
+            const bookmarkBtn = document.getElementById(`bookmark-${index}`);
+            if (bookmarkBtn) {
+                bookmarkBtn.textContent = markedQuestions.has(index) ? '★' : '☆';
+                bookmarkBtn.classList.toggle('marked', markedQuestions.has(index));
+            }
+
+            // Update stats
+            updateStats();
+        }
+
+        function setFilter(filterType) {
+            currentFilter = filterType;
+
+            // Update button states
+            document.getElementById('filterAll').classList.toggle('active', filterType === 'all');
+            document.getElementById('filterMarked').classList.toggle('active', filterType === 'marked');
+
+            // Refresh display
+            if (showAllQuestionsMode) {
+                displayAllQuestions();
+            } else {
+                currentPage = 1; // Reset to first page
+                displayPage(1);
+            }
+        }
+
+        function getFilteredQuestions() {
+            if (currentFilter === 'marked') {
+                return questions.map((q, i) => ({ ...q, originalIndex: i }))
+                    .filter((q, i) => markedQuestions.has(i));
+            }
+            return questions.map((q, i) => ({ ...q, originalIndex: i }));
+        }
+
+        function toggleViewMode() {
+            showAllQuestionsMode = !showAllQuestionsMode;
+
+            if (showAllQuestionsMode) {
+                displayAllQuestions();
+                document.getElementById('viewToggleBtn').textContent = 'Show Pages (10 per page)';
+            } else {
+                displayPage(currentPage);
+                document.getElementById('viewToggleBtn').textContent = 'Show All 100 Questions';
+            }
+        }
+
+        function displayAllQuestions() {
+            const filteredQuestions = getFilteredQuestions();
+
+            // Hide pagination and page info
+            document.getElementById('pagination').style.display = 'none';
+            const totalText = currentFilter === 'marked' ? `${filteredQuestions.length} Marked Questions` : 'All 100 Questions';
+            document.getElementById('pageInfo').textContent = totalText;
+            document.getElementById('currentPage').textContent = '-';
+
+            // Clear container
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            // Show message if no marked questions
+            if (filteredQuestions.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">No marked questions yet. Click the ★ to mark questions for review.</div>';
+                updateStats();
+                return;
+            }
+
+            // Add all filtered questions
+            filteredQuestions.forEach((q) => {
+                const i = q.originalIndex;
+                const isMarked = markedQuestions.has(i);
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-item';
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-content" onclick="toggleAnswer(${i})">
+                            <div class="question-number">Question ${i + 1}</div>
+                            <div class="question-text">${q.q}</div>
+                        </div>
+                        <div class="question-controls">
+                            <button class="bookmark-btn ${isMarked ? 'marked' : ''}" onclick="toggleBookmark(${i})" id="bookmark-${i}" title="Mark for review">${isMarked ? '★' : '☆'}</button>
+                            <button class="toggle-btn" onclick="toggleAnswer(${i})" id="btn-${i}">Show</button>
+                        </div>
+                    </div>
+                    <div class="answer-text" id="answer-${i}">${q.a}</div>
+                `;
+                container.appendChild(questionDiv);
+
+                // Mark as viewed
+                viewedQuestions.add(i);
+            });
+
+            // Update stats
+            updateStats();
+
+            // Reset show all button
+            allAnswersVisible = false;
+            document.getElementById('showAllBtn').textContent = 'Show All Answers';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         function displayPage(pageNumber) {
-            currentPage = pageNumber;
-            const startIdx = (pageNumber - 1) * QUESTIONS_PER_PAGE;
-            const endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, questions.length);
+            const filteredQuestions = getFilteredQuestions();
+            const totalPages = Math.ceil(filteredQuestions.length / QUESTIONS_PER_PAGE);
 
-            // Update page info
+            currentPage = Math.min(pageNumber, Math.max(1, totalPages));
+            const startIdx = (currentPage - 1) * QUESTIONS_PER_PAGE;
+            const endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, filteredQuestions.length);
+
+            // Show pagination and update page info
+            document.getElementById('pagination').style.display = 'flex';
+
+            if (filteredQuestions.length === 0) {
+                document.getElementById('pageInfo').textContent = 'No marked questions';
+                document.getElementById('currentPage').textContent = '0';
+                document.getElementById('questionsContainer').innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">No marked questions yet. Click the ★ to mark questions for review.</div>';
+                document.getElementById('pagination').style.display = 'none';
+                updateStats();
+                return;
+            }
+
+            const firstQ = filteredQuestions[startIdx].originalIndex + 1;
+            const lastQ = filteredQuestions[endIdx - 1].originalIndex + 1;
             document.getElementById('pageInfo').textContent =
-                `Page ${pageNumber} of ${TOTAL_PAGES} (Questions ${startIdx + 1}-${endIdx})`;
-            document.getElementById('currentPage').textContent = pageNumber;
+                `Page ${currentPage} of ${totalPages} (Questions ${firstQ}-${lastQ})`;
+            document.getElementById('currentPage').textContent = currentPage;
 
             // Clear container
             const container = document.getElementById('questionsContainer');
             container.innerHTML = '';
 
             // Add questions for this page
-            for (let i = startIdx; i < endIdx; i++) {
-                const q = questions[i];
+            for (let idx = startIdx; idx < endIdx; idx++) {
+                const q = filteredQuestions[idx];
+                const i = q.originalIndex;
+                const isMarked = markedQuestions.has(i);
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question-item';
                 questionDiv.innerHTML = `
-                    <div class="question-header" onclick="toggleAnswer(${i})">
-                        <div class="question-content">
+                    <div class="question-header">
+                        <div class="question-content" onclick="toggleAnswer(${i})">
                             <div class="question-number">Question ${i + 1}</div>
                             <div class="question-text">${q.q}</div>
                         </div>
-                        <button class="toggle-btn" onclick="event.stopPropagation(); toggleAnswer(${i})" id="btn-${i}">Show</button>
+                        <div class="question-controls">
+                            <button class="bookmark-btn ${isMarked ? 'marked' : ''}" onclick="toggleBookmark(${i})" id="bookmark-${i}" title="Mark for review">${isMarked ? '★' : '☆'}</button>
+                            <button class="toggle-btn" onclick="toggleAnswer(${i})" id="btn-${i}">Show</button>
+                        </div>
                     </div>
                     <div class="answer-text" id="answer-${i}">${q.a}</div>
                 `;
@@ -494,11 +708,11 @@
                 viewedQuestions.add(i);
             }
 
-            // Update viewed count
-            updateProgress();
+            // Update stats
+            updateStats();
 
             // Update pagination
-            renderPagination();
+            renderPagination(totalPages);
 
             // Reset show all button
             allAnswersVisible = false;
@@ -523,8 +737,17 @@
 
         function toggleAllAnswers() {
             allAnswersVisible = !allAnswersVisible;
-            const startIdx = (currentPage - 1) * QUESTIONS_PER_PAGE;
-            const endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, questions.length);
+
+            let startIdx, endIdx;
+            if (showAllQuestionsMode) {
+                // Toggle all 100 questions
+                startIdx = 0;
+                endIdx = questions.length;
+            } else {
+                // Toggle current page only
+                startIdx = (currentPage - 1) * QUESTIONS_PER_PAGE;
+                endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, questions.length);
+            }
 
             for (let i = startIdx; i < endIdx; i++) {
                 const answerEl = document.getElementById(`answer-${i}`);
@@ -543,7 +766,7 @@
                 allAnswersVisible ? 'Hide All Answers' : 'Show All Answers';
         }
 
-        function renderPagination() {
+        function renderPagination(totalPages) {
             const pagination = document.getElementById('pagination');
             pagination.innerHTML = '';
 
@@ -559,7 +782,7 @@
             pagination.appendChild(prevBtn);
 
             // Page number buttons
-            for (let i = 1; i <= TOTAL_PAGES; i++) {
+            for (let i = 1; i <= totalPages; i++) {
                 const pageBtn = document.createElement('button');
                 pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
                 pageBtn.textContent = i;
@@ -572,21 +795,23 @@
             nextBtn.className = 'page-btn nav-btn';
             nextBtn.textContent = '→';
             nextBtn.onclick = () => {
-                if (currentPage < TOTAL_PAGES) displayPage(currentPage + 1);
+                if (currentPage < totalPages) displayPage(currentPage + 1);
             };
-            nextBtn.disabled = currentPage === TOTAL_PAGES;
-            if (currentPage === TOTAL_PAGES) nextBtn.style.opacity = '0.3';
+            nextBtn.disabled = currentPage === totalPages;
+            if (currentPage === totalPages) nextBtn.style.opacity = '0.3';
             pagination.appendChild(nextBtn);
         }
 
-        function updateProgress() {
+        function updateStats() {
             document.getElementById('viewedQ').textContent = viewedQuestions.size;
+            document.getElementById('markedQ').textContent = markedQuestions.size;
             const progress = Math.round((viewedQuestions.size / questions.length) * 100);
             document.getElementById('progressBar').style.width = progress + '%';
             document.getElementById('progressBar').textContent = `${viewedQuestions.size}/100`;
         }
 
         // Initialize
+        updateStats();
         displayPage(1);
     </script>
 </body>
