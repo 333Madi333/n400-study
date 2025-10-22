@@ -236,6 +236,24 @@
             background: #d0d0d0;
         }
 
+        .view-toggle-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+
+        .view-toggle-btn:hover {
+            background: #5568d3;
+        }
+
         /* Mobile optimizations for iPhone */
         @media (max-width: 600px) {
             body {
@@ -322,6 +340,7 @@
         <div class="card">
             <div class="page-info" id="pageInfo">Page 1 of 10 (Questions 1-10)</div>
 
+            <button class="view-toggle-btn" onclick="toggleViewMode()" id="viewToggleBtn">Show All 100 Questions</button>
             <button class="show-all-btn" onclick="toggleAllAnswers()" id="showAllBtn">Show All Answers</button>
 
             <div class="questions-container" id="questionsContainer">
@@ -458,13 +477,69 @@
         let currentPage = 1;
         let viewedQuestions = new Set();
         let allAnswersVisible = false;
+        let showAllQuestionsMode = false;
+
+        function toggleViewMode() {
+            showAllQuestionsMode = !showAllQuestionsMode;
+
+            if (showAllQuestionsMode) {
+                displayAllQuestions();
+                document.getElementById('viewToggleBtn').textContent = 'Show Pages (10 per page)';
+            } else {
+                displayPage(currentPage);
+                document.getElementById('viewToggleBtn').textContent = 'Show All 100 Questions';
+            }
+        }
+
+        function displayAllQuestions() {
+            // Hide pagination and page info
+            document.getElementById('pagination').style.display = 'none';
+            document.getElementById('pageInfo').textContent = 'All 100 Questions';
+            document.getElementById('currentPage').textContent = '-';
+
+            // Clear container
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            // Add all questions
+            for (let i = 0; i < questions.length; i++) {
+                const q = questions[i];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-item';
+                questionDiv.innerHTML = `
+                    <div class="question-header" onclick="toggleAnswer(${i})">
+                        <div class="question-content">
+                            <div class="question-number">Question ${i + 1}</div>
+                            <div class="question-text">${q.q}</div>
+                        </div>
+                        <button class="toggle-btn" onclick="event.stopPropagation(); toggleAnswer(${i})" id="btn-${i}">Show</button>
+                    </div>
+                    <div class="answer-text" id="answer-${i}">${q.a}</div>
+                `;
+                container.appendChild(questionDiv);
+
+                // Mark as viewed
+                viewedQuestions.add(i);
+            }
+
+            // Update viewed count
+            updateProgress();
+
+            // Reset show all button
+            allAnswersVisible = false;
+            document.getElementById('showAllBtn').textContent = 'Show All Answers';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         function displayPage(pageNumber) {
             currentPage = pageNumber;
             const startIdx = (pageNumber - 1) * QUESTIONS_PER_PAGE;
             const endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, questions.length);
 
-            // Update page info
+            // Show pagination and update page info
+            document.getElementById('pagination').style.display = 'flex';
             document.getElementById('pageInfo').textContent =
                 `Page ${pageNumber} of ${TOTAL_PAGES} (Questions ${startIdx + 1}-${endIdx})`;
             document.getElementById('currentPage').textContent = pageNumber;
@@ -523,8 +598,17 @@
 
         function toggleAllAnswers() {
             allAnswersVisible = !allAnswersVisible;
-            const startIdx = (currentPage - 1) * QUESTIONS_PER_PAGE;
-            const endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, questions.length);
+
+            let startIdx, endIdx;
+            if (showAllQuestionsMode) {
+                // Toggle all 100 questions
+                startIdx = 0;
+                endIdx = questions.length;
+            } else {
+                // Toggle current page only
+                startIdx = (currentPage - 1) * QUESTIONS_PER_PAGE;
+                endIdx = Math.min(startIdx + QUESTIONS_PER_PAGE, questions.length);
+            }
 
             for (let i = startIdx; i < endIdx; i++) {
                 const answerEl = document.getElementById(`answer-${i}`);
