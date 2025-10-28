@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="N-400 Study Sentences - Learn 100 Civics Facts in Complete Sentences">
+    <meta name="keywords" content="N-400, citizenship, civics test, USCIS, naturalization, study sentences">
+    <meta name="author" content="N-400 Study App">
+    <title>N-400 Study Sentences</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/sentences.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>🇺🇸 N-400 Study Sentences</h1>
+            <p>Learn 100 Civics Facts in Complete Sentences</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar">0/100</div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="card navigation-card">
+            <a href="index.html" class="nav-link">← Switch to Q&A Format</a>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="card">
+            <!-- Page Information -->
+            <div class="page-info" id="pageInfo">Page 1 of 10 (Sentences 1-10)</div>
+
+            <!-- View Toggle Button -->
+            <button class="view-toggle-btn" onclick="toggleViewMode()" id="viewToggleBtn">
+                Show All 100 Sentences
+            </button>
+
+            <!-- Filter Buttons -->
+            <div class="filter-container">
+                <button class="filter-btn active" onclick="setFilter('all')" id="filterAll">
+                    All Sentences
+                </button>
+                <button class="filter-btn" onclick="setFilter('marked')" id="filterMarked">
+                    Marked Only
+                </button>
+            </div>
+
+            <!-- Sentences Container -->
+            <div class="sentences-container" id="sentencesContainer">
+                <!-- Sentences will be dynamically inserted here by JavaScript -->
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination buttons will be dynamically inserted here by JavaScript -->
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="currentPage">1</div>
+                    <div class="stat-label">Current Page</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="markedS">0</div>
+                    <div class="stat-label">Marked</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="viewedS">0</div>
+                    <div class="stat-label">Viewed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/sentences.js"></script>
+    <script src="js/sentences-app.js"></script>
+</body>
+</html>
