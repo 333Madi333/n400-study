@@ -4,11 +4,23 @@ A modern, responsive web application for studying the 100 civics questions requi
 
 ## Features
 
-### 📚 Study Modes
-- **Paginated View**: Study 10 questions at a time with easy navigation
-- **Full View**: View all 100 questions on a single scrollable page
-- **Sequential Learning**: Go through questions in order
-- **Progress Tracking**: See how many questions you've viewed
+### 📚 Two Learning Formats
+
+#### Question & Answer Format (`index.html`)
+Practice with traditional Q&A format - perfect for simulating the actual interview.
+
+#### Study Sentences Format (`sentences.html`)
+Learn with complete sentences - easier to read and memorize!
+- All questions and answers rephrased as declarative sentences
+- Example: "The supreme law of the land is the Constitution."
+- Simpler format for studying and retention
+- Easy navigation between both formats
+
+### 📖 Study Modes
+- **Paginated View**: Study 10 items at a time with easy navigation
+- **Full View**: View all 100 items on a single scrollable page
+- **Sequential Learning**: Go through content in order
+- **Progress Tracking**: See how many items you've viewed
 
 ### ⭐ Bookmark System
 - **Mark Questions**: Click the star (☆) to bookmark difficult questions
@@ -33,45 +45,91 @@ A modern, responsive web application for studying the 100 civics questions requi
 
 ```
 n400-study/
-├── index.html          # Main HTML structure
+├── index.html              # Question & Answer format page
+├── sentences.html          # Study Sentences format page
 ├── css/
-│   └── styles.css      # All styling and responsive design
+│   ├── styles.css          # Main styling and responsive design
+│   └── sentences.css       # Sentences page specific styles
 ├── js/
-│   ├── questions.js    # Official USCIS 100 civics questions data
-│   └── app.js          # Application logic and state management
-└── README.md           # This file
+│   ├── questions.js        # Official USCIS 100 civics questions (Q&A format)
+│   ├── app.js              # Q&A page application logic
+│   ├── sentences.js        # 100 civics facts as complete sentences
+│   └── sentences-app.js    # Sentences page application logic
+└── README.md               # This file
 ```
 
 ## File Organization
 
-### `index.html`
-Clean, semantic HTML structure with proper meta tags and comments. Contains the DOM structure for the application.
+### HTML Files
 
-### `css/styles.css`
+**`index.html`**
+- Question & Answer format page
+- Clean, semantic HTML structure
+- Traditional interview-style Q&A practice
+
+**`sentences.html`**
+- Study Sentences format page
+- Simplified learning with complete sentences
+- Same features as Q&A format (bookmarks, filtering, pagination)
+
+### CSS Files
+
+**`css/styles.css`**
 - Reset and base styles
 - Component-specific styles (header, cards, buttons, etc.)
 - Mobile-responsive media queries
 - Animations and transitions
 
-### `js/questions.js`
+**`css/sentences.css`**
+- Sentences page specific styling
+- Navigation links styling
+- Sentence item layout
+
+### JavaScript Files
+
+**`js/questions.js`**
 - Contains all 100 official USCIS N-400 civics questions
 - Structured as an array of objects with question and answer properties
 - Easy to update and maintain
 
-### `js/app.js`
-- Application state management
-- View rendering logic
-- Event handlers
-- localStorage integration
-- Pagination system
-- Bookmark functionality
+**`js/app.js`**
+- Q&A page application logic
+- State management and view rendering
+- Event handlers and localStorage integration
+- Pagination and bookmark functionality
+
+**`js/sentences.js`**
+- Contains all 100 civics facts as complete sentences
+- Rephrased from Q&A format for easier learning
+- Example: "The supreme law of the land is the Constitution."
+
+**`js/sentences-app.js`**
+- Sentences page application logic
+- Similar to app.js but adapted for sentence format
+- Bookmark and filtering functionality
 
 ## How to Use
 
 ### Getting Started
 1. Clone or download this repository
-2. Open `index.html` in a web browser
+2. Choose your learning format:
+   - Open `index.html` for Question & Answer format
+   - Open `sentences.html` for Study Sentences format
 3. No build process or dependencies required!
+4. Switch between formats anytime using the navigation link
+
+### Choosing a Format
+
+**Use Q&A Format (`index.html`) when:**
+- Practicing for the actual interview
+- Testing your knowledge
+- Want to see how questions are asked
+
+**Use Sentences Format (`sentences.html`) when:**
+- First learning the material
+- Memorizing facts
+- Want simpler, easier-to-read content
+- Prefer declarative statements
 
 ### Study Features
 
