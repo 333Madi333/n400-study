@@ -27,7 +27,7 @@ const questions = [
     { q: "What are the two parts of the U.S. Congress?", a: "The Senate and House of Representatives" },
     { q: "How many U.S. Senators are there?", a: "One hundred (100)" },
     { q: "We elect a U.S. Senator for how many years?", a: "Six (6)" },
-    { q: "Who is one of your state's U.S. Senators now?", a: "Answers will vary. [Visit uscis.gov/citizenship/find-study-materials for your state's senators]" },
+    { q: "Who is one of your state's U.S. Senators now?", a: "Answers will vary. [Michigan residents: Elissa Slotkin or Gary Peters]" },
     { q: "The House of Representatives has how many voting members?", a: "Four hundred thirty-five (435)" },
     { q: "We elect a U.S. Representative for how many years?", a: "Two (2)" },
     { q: "Name your U.S. Representative.", a: "Answers will vary. [Visit uscis.gov/citizenship/find-study-materials to find your representative]" },
