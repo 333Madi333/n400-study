@@ -20,6 +20,7 @@ Learn with complete sentences - easier to read and memorize!
 - **Paginated View**: Study 10 items at a time with easy navigation
 - **Full View**: View all 100 items on a single scrollable page
 - **Sequential Learning**: Go through content in order
+- **Shuffle Mode**: Randomize all 100 questions for varied practice
 - **Progress Tracking**: See how many items you've viewed
 
 ### ⭐ Bookmark System
@@ -134,8 +135,15 @@ n400-study/
 ### Study Features
 
 #### **View Modes**
-- Click **"Show All 100 Questions"** to see everything at once
+- Click **"Show All 100 Questions"** (or Sentences) to see everything at once
 - Click **"Show Pages (10 per page)"** to return to paginated view
+
+#### **Shuffle Mode**
+- Click **"Shuffle Questions"** (or Sentences) to randomize the order
+- Questions maintain their original numbering (e.g., #42 might appear first)
+- Perfect for avoiding memorization by sequence
+- Click **"Show Original Order"** to return to normal sequence
+- Works with all filters (All Questions, Marked Only)
 
 #### **Filtering**
 - **All Questions**: View all 100 questions

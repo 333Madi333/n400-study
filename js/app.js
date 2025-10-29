@@ -19,7 +19,9 @@ const state = {
     markedQuestions: new Set(JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]')),
     allAnswersVisible: false,
     showAllQuestionsMode: false,
-    currentFilter: 'all' // 'all' or 'marked'
+    currentFilter: 'all', // 'all' or 'marked'
+    isShuffled: false,
+    shuffledIndices: []
 };
 
 /**
@@ -46,6 +48,39 @@ function toggleBookmark(index) {
 }
 
 /**
+ * Shuffle Management
+ */
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+function toggleShuffle() {
+    state.isShuffled = !state.isShuffled;
+
+    if (state.isShuffled) {
+        // Create shuffled indices array
+        state.shuffledIndices = shuffleArray([...Array(questions.length).keys()]);
+        document.getElementById('shuffleBtn').textContent = 'Show Original Order';
+    } else {
+        state.shuffledIndices = [];
+        document.getElementById('shuffleBtn').textContent = 'Shuffle Questions';
+    }
+
+    // Reset to first page and refresh display
+    state.currentPage = 1;
+    if (state.showAllQuestionsMode) {
+        displayAllQuestions();
+    } else {
+        displayPage(1);
+    }
+}
+
+/**
  * Filter Management
  */
 function setFilter(filterType) {
@@ -65,14 +100,24 @@ function setFilter(filterType) {
 }
 
 /**
- * Get filtered questions based on current filter
+ * Get filtered questions based on current filter and shuffle state
  */
 function getFilteredQuestions() {
-    if (state.currentFilter === 'marked') {
-        return questions.map((q, i) => ({ ...q, originalIndex: i }))
-            .filter((q, i) => state.markedQuestions.has(i));
+    let questionsArray;
+
+    // Apply shuffle if enabled
+    if (state.isShuffled) {
+        questionsArray = state.shuffledIndices.map(i => ({ ...questions[i], originalIndex: i }));
+    } else {
+        questionsArray = questions.map((q, i) => ({ ...q, originalIndex: i }));
     }
-    return questions.map((q, i) => ({ ...q, originalIndex: i }));
+
+    // Apply filter
+    if (state.currentFilter === 'marked') {
+        return questionsArray.filter(q => state.markedQuestions.has(q.originalIndex));
+    }
+
+    return questionsArray;
 }
 
 /**
