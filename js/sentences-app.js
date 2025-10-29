@@ -18,7 +18,9 @@ const state = {
     viewedSentences: new Set(),
     markedSentences: new Set(JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]')),
     showAllSentencesMode: false,
-    currentFilter: 'all' // 'all' or 'marked'
+    currentFilter: 'all', // 'all' or 'marked'
+    isShuffled: false,
+    shuffledIndices: []
 };
 
 /**
@@ -45,6 +47,39 @@ function toggleBookmark(index) {
 }
 
 /**
+ * Shuffle Management
+ */
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+function toggleShuffle() {
+    state.isShuffled = !state.isShuffled;
+
+    if (state.isShuffled) {
+        // Create shuffled indices array
+        state.shuffledIndices = shuffleArray([...Array(sentences.length).keys()]);
+        document.getElementById('shuffleBtn').textContent = 'Show Original Order';
+    } else {
+        state.shuffledIndices = [];
+        document.getElementById('shuffleBtn').textContent = 'Shuffle Sentences';
+    }
+
+    // Reset to first page and refresh display
+    state.currentPage = 1;
+    if (state.showAllSentencesMode) {
+        displayAllSentences();
+    } else {
+        displayPage(1);
+    }
+}
+
+/**
  * Filter Management
  */
 function setFilter(filterType) {
@@ -64,14 +99,24 @@ function setFilter(filterType) {
 }
 
 /**
- * Get filtered sentences based on current filter
+ * Get filtered sentences based on current filter and shuffle state
  */
 function getFilteredSentences() {
-    if (state.currentFilter === 'marked') {
-        return sentences.map((s, i) => ({ text: s, originalIndex: i }))
-            .filter((s, i) => state.markedSentences.has(i));
+    let sentencesArray;
+
+    // Apply shuffle if enabled
+    if (state.isShuffled) {
+        sentencesArray = state.shuffledIndices.map(i => ({ text: sentences[i], originalIndex: i }));
+    } else {
+        sentencesArray = sentences.map((s, i) => ({ text: s, originalIndex: i }));
     }
-    return sentences.map((s, i) => ({ text: s, originalIndex: i }));
+
+    // Apply filter
+    if (state.currentFilter === 'marked') {
+        return sentencesArray.filter(s => state.markedSentences.has(s.originalIndex));
+    }
+
+    return sentencesArray;
 }
 
 /**
